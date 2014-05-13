@@ -17,4 +17,6 @@ before_script:
    - wget http://getcomposer.org/composer.phar
    - php composer.phar install --prefer-source
 
-script: phpunit --configuration phpunit.travis.xml
+script:
+  - vendor/bin/phpunit --configuration phpunit.travis.xml
+  - vendor/bin/php-cs-fixer
