@@ -23,11 +23,18 @@ final class LegacyLdapDriver implements LdapDriverInterface
     private $logger;
     private $ldap_res;
 
-    public function __construct(array $params, $version = 3, LoggerInterface $logger = null)
+    public function __construct($version = 3, LoggerInterface $logger = null)
     {
-        $this->params = $params;
         $this->version = $version;
         $this->logger = $logger;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function init(array $options)
+    {
+        $this->params = $options;
     }
 
     public function search($baseDn, $filter, array $attributes = array())

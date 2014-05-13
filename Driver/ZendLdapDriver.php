@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class ZendLdapDriver implements LdapDriverInterface
 {
+
     /**
      * @var Ldap $driver
      */
@@ -35,6 +36,14 @@ class ZendLdapDriver implements LdapDriverInterface
     {
         $this->driver = $driver;
         $this->logger = $logger;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function init(array $options)
+    {
+        $this->driver->disconnect()->setOptions($options);
     }
 
     /**

@@ -7,8 +7,9 @@ use FR3D\LdapBundle\Tests\TestUser;
 
 class LdapManagerTest extends \PHPUnit_Framework_TestCase
 {
+
     /** @var array */
-    protected $params;
+    protected $paramSets;
 
     /**
      * @var \FR3D\LdapBundle\Driver\LdapDriverInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -31,13 +32,20 @@ class LdapManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->params = array(
-            'baseDn'     => 'ou=Groups,dc=example,dc=com',
-            'filter'     => '(attr0=value0)',
-            'attributes' => array(
-                array(
-                    'ldap_attr'   => 'uid',
-                    'user_method' => 'setUsername',
+        $this->paramSets = array(
+            'server1' => array(
+                'driver' => array(
+                // SOME ATTRIBUTES
+                ),
+                'user' => array(
+                    'baseDn'     => 'ou=Groups,dc=example,dc=com',
+                    'filter'     => '(attr0=value0)',
+                    'attributes' => array(
+                        array(
+                            'ldap_attr'   => 'uid',
+                            'user_method' => 'setUsername',
+                        ),
+                    ),
                 ),
             ),
         );
@@ -49,7 +57,7 @@ class LdapManagerTest extends \PHPUnit_Framework_TestCase
                 ->method('createUser')
                 ->will($this->returnValue(new TestUser()));
 
-        $this->ldapManager = new LdapManager($this->driver, $this->userManager, $this->params);
+        $this->ldapManager = new LdapManager($this->driver, $this->userManager, $this->paramSets);
     }
 
     /**
@@ -57,12 +65,13 @@ class LdapManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstruct()
     {
-        $this->params['attributes'][] = array(
+        $this->paramSets['server1']['user']['attributes'][] = array(
             'ldap_attr'   => 'mail',
             'user_method' => 'setEmail',
         );
 
-        $this->ldapManager = new LdapManager($this->driver, $this->userManager, $this->params);
+        $this->ldapManager = new LdapManager($this->driver, $this->userManager, $this->paramSets);
+        $this->ldapManager->bind(new TestUser, 'some password');
 
         $reflectionClass        = new \ReflectionClass('FR3D\LdapBundle\Ldap\LdapManager');
         $propertyLdapAttributes = $reflectionClass->getProperty('ldapAttributes');
@@ -94,12 +103,12 @@ class LdapManagerTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->driver
-            ->expects($this->once())
-            ->method('search')
+                ->expects($this->once())
+                ->method('search')
             ->with($this->equalTo('ou=Groups,dc=example,dc=com'),
                    $this->equalTo('(&(attr0=value0)(uid=test_username))'),
                    $this->equalTo(array('uid')))
-            ->will($this->returnValue($entries));
+                ->will($this->returnValue($entries));
 
         $resultUser = $this->ldapManager->findUserByUsername($username);
 
@@ -128,14 +137,15 @@ class LdapManagerTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->driver
-            ->expects($this->once())
-            ->method('search')
+                ->expects($this->once())
+                ->method('search')
             ->with($this->equalTo('ou=Groups,dc=example,dc=com'),
                    $this->equalTo('(&(attr0=value0)(uid=test_username))'),
                    $this->equalTo(array('uid')))
-            ->will($this->returnValue($entries));
+                ->will($this->returnValue($entries));
 
         $criteria = array('uid' => 'test_username');
+        $this->ldapManager->bind($user, 'password');
         $resultUser = $this->ldapManager->findUserBy($criteria);
 
         $this->assertEquals($user->getUsername(), $resultUser->getUsername());
@@ -155,6 +165,8 @@ class LdapManagerTest extends \PHPUnit_Framework_TestCase
             'attr2' => 'value2',
         );
         $expected = '(&(attr0=value0)(attr1=value1)(attr2=value2))';
+
+        $this->ldapManager->bind(new TestUser, 'password');
 
         $this->assertEquals($expected, $method->invoke($this->ldapManager, $criteria));
     }
@@ -181,6 +193,7 @@ class LdapManagerTest extends \PHPUnit_Framework_TestCase
             ),
         );
 
+        $this->ldapManager->bind($user, 'password');
         $method->invoke($this->ldapManager, $user, $entry);
 
         $this->assertEquals($username, $user->getUsername());
@@ -192,7 +205,7 @@ class LdapManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testHydrateArray()
     {
-        $this->params['attributes'] = array(
+        $this->paramSets['server1']['user']['attributes'] = array(
             array(
                 'ldap_attr'   => 'roles',
                 'user_method' => 'setRoles',
@@ -212,7 +225,8 @@ class LdapManagerTest extends \PHPUnit_Framework_TestCase
             'roles' => $roles,
         );
 
-        $this->ldapManager = new LdapManager($this->driver, $this->userManager, $this->params);
+        $this->ldapManager = new LdapManager($this->driver, $this->userManager, $this->paramSets);
+        $this->ldapManager->bind($user, 'password');
 
         $reflectionClass = new \ReflectionClass('FR3D\LdapBundle\Ldap\LdapManager');
         $method          = $reflectionClass->getMethod('hydrate');
