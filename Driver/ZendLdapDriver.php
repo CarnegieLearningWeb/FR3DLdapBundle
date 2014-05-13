@@ -92,7 +92,7 @@ class ZendLdapDriver implements LdapDriverInterface
 
     /**
      * Treat a Zend Ldap Exception
-     * 
+     *
      * @param ZendLdapException $exception
      */
     protected function zendExceptionHandler(ZendLdapException $exception)
@@ -114,7 +114,7 @@ class ZendLdapDriver implements LdapDriverInterface
 
     /**
      * Log debug messages if the logger is set.
-     * 
+     *
      * @param string $message
      */
     private function logDebug($message)

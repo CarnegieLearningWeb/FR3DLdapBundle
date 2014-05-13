@@ -187,7 +187,7 @@ class LdapManager implements LdapManagerInterface
      */
     public function getRolesForUsername($username)
     {
-        
+
     }
 
     /**

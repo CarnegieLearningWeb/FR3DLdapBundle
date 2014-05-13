@@ -15,7 +15,7 @@ interface LdapDriverInterface
 
     /**
      * Initialize the driver (new options)
-     * 
+     *
      * @param array $options          New options to connect.
      */
     public function init(array $options);
@@ -30,7 +30,7 @@ interface LdapDriverInterface
      *
      * @throws LdapDriverException if some error occurs.
      */
-    function bind(UserInterface $user, $password);
+    public function bind(UserInterface $user, $password);
 
     /**
      * Search LDAP tree
@@ -48,5 +48,5 @@ interface LdapDriverInterface
      *
      * @throws LdapDriverException if some error occurs.
      */
-    function search($baseDn, $filter, array $attributes = array());
+    public function search($baseDn, $filter, array $attributes = array());
 }

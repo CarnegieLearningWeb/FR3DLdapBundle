@@ -28,7 +28,7 @@ final class LegacyLdapDriver implements LdapDriverInterface
         $this->version = $version;
         $this->logger = $logger;
     }
-    
+
     /**
      * {@inheritDoc}
      */

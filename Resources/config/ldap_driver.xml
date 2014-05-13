@@ -21,7 +21,7 @@
             <argument type="service" id="fr3d_ldap.ldap_driver.zend.driver" />
             <argument type="service" id="logger" />
         </service>
-        
+
         <!-- Legacy driver (Deprecated) -->
         <service id="fr3d_ldap.ldap_driver.legacy" class="%fr3d_ldap.ldap_driver.legacy.class%">
             <tag name="monolog.logger" channel="ldap_driver" />

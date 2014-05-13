@@ -50,7 +50,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('networkTimeout')->end()
                 ->end()
                 ->validate()
-                ->ifTrue(function($v) {
+                ->ifTrue(function ($v) {
                     return $v['useSsl'] && $v['useStartTls'];
                 })
                 ->thenInvalid('The useSsl and useStartTls options are mutually exclusive.')
