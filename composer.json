@@ -27,7 +27,7 @@
         "symfony/class-loader": ">=2.1",
         "symfony/validator": ">=2.1",
         "phpunit/phpunit": ">=4.0",
-        "fabpot/php-cs-fixer": "dev-master"
+        "fabpot/php-cs-fixer": "*"
     },
     "suggest": {
         "symfony/validator": "Allow pre-validate for existing users before register new ones",
