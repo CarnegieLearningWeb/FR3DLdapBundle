@@ -10,6 +10,7 @@ env:
   - SYMFONY_VERSION=2.1
   - SYMFONY_VERSION=2.2
   - SYMFONY_VERSION=2.3
+  - SYMFONY_VERSION=2.4
 
 before_script:
    - bash .travis.sh
@@ -17,4 +18,3 @@ before_script:
    - php composer.phar install --prefer-source
 
 script: phpunit --configuration phpunit.travis.xml
-
